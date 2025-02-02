@@ -1,13 +1,20 @@
 import { useState } from 'react'
 
-type Props = {
-  onSelect: (emoji: string) => void
-  onClose: () => void
-}
-
 type EmojiData = {
   emoji: string
   keywords: string[]
+}
+
+type Props = {
+  onSelect: (emoji: string) => void
+  onClose?: () => void
+}
+
+type EmojiCategory = {
+  [key: string]: Array<{
+    emoji: string
+    keywords: string[]
+  }>
 }
 
 const EMOJI_CATEGORIES: Record<string, EmojiData[]> = {

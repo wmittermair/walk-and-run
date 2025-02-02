@@ -1,25 +1,17 @@
-import { Activity, ActivityType } from '../App'
+import { Activity, ActivityType, UserFilter } from '../types'
 import { useUserData } from '../hooks/useUserData'
 import DeleteConfirmationModal from './DeleteConfirmationModal'
 import { useState, useEffect } from 'react'
 import { db } from '../lib/firebase'
 import { collection, getDocs } from 'firebase/firestore'
 
-// Helper-Funktionen außerhalb der Komponenten
+// Helper-Funktionen
 const calculateCost = (value: number, unit: 'Kilometer' | 'Minuten') => {
   if (unit === 'Kilometer') {
-    return value * 0.15; // 0,15€ pro km
+    return value * 0.15 // 0,15€ pro km
   } else {
-    return (value / 10) * 0.15; // 0,15€ pro 10 Minuten
+    return (value / 10) * 0.15 // 0,15€ pro 10 Minuten
   }
-}
-
-// Neuer Typ für User-Filter
-type UserFilter = {
-  id: string
-  displayName: string | null
-  email: string | null
-  photoURL: string | null
 }
 
 type Props = {
@@ -136,7 +128,8 @@ const ActivityItem = ({ activity, type, activityTypes, onDelete, onEdit, current
 }
 
 const ActivityList = ({ activities, activityTypes, currentUserId, onDelete, onEdit, userData, selectedUserId }: Props) => {
-  // Filter die Aktivitäten nach ausgewähltem Benutzer
+  const [activityToDelete, setActivityToDelete] = useState<string | null>(null)
+
   const filteredActivities = selectedUserId === 'all' 
     ? activities 
     : activities.filter(activity => activity.userId === selectedUserId)
@@ -272,6 +265,16 @@ const ActivityList = ({ activities, activityTypes, currentUserId, onDelete, onEd
               : 'Wähle einen anderen Benutzer oder zeige alle Aktivitäten an.'}
           </p>
         </div>
+      )}
+
+      {activityToDelete && (
+        <DeleteConfirmationModal
+          onConfirm={() => {
+            onDelete(activityToDelete)
+            setActivityToDelete(null)
+          }}
+          onCancel={() => setActivityToDelete(null)}
+        />
       )}
     </div>
   )

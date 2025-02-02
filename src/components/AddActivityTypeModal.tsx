@@ -1,11 +1,13 @@
 import { useState, useRef } from 'react'
 import data from '@emoji-mart/data'
 import Picker from '@emoji-mart/react'
-import { ActivityType } from '../App'
+import { ActivityType } from '../types'
+import EmojiPicker from './EmojiPicker'
+import type { EmojiClickData } from '@emoji-mart/data'
 
 type Props = {
   onClose: () => void
-  onAdd: (type: Omit<ActivityType, 'id'>) => Promise<void>
+  onAdd: (type: Omit<ActivityType, 'id' | 'createdAt' | 'status'>) => Promise<void>
   editType?: ActivityType
   onBack?: () => void
 }
@@ -71,7 +73,7 @@ export default function AddActivityTypeModal({ onClose, onAdd, editType, onBack 
               >
                 <Picker
                   data={data}
-                  onEmojiSelect={(emoji: any) => {
+                  onEmojiSelect={(emoji: EmojiClickData) => {
                     setEmoji(emoji.native)
                     setShowEmojiPicker(false)
                   }}

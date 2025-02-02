@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { collection, query, where, onSnapshot, orderBy, doc, updateDoc } from 'firebase/firestore'
 import { db, messaging } from '../lib/firebase'
 import { getToken } from 'firebase/messaging'
-import { User } from 'firebase/auth'
+import { User, NotificationType } from '../types'
 
 // Cache im localStorage verwalten
 const getShownNotifications = (): Set<string> => {
@@ -17,6 +17,9 @@ const addToShownNotifications = (id: string) => {
 }
 
 export function useNotifications(currentUser: User | null) {
+  const [notifications, setNotifications] = useState<NotificationType[]>([])
+  const [unreadCount, setUnreadCount] = useState(0)
+
   useEffect(() => {
     if (!currentUser) return
 
@@ -63,14 +66,16 @@ export function useNotifications(currentUser: User | null) {
     )
 
     const unsubscribe = onSnapshot(q, (snapshot) => {
+      const newNotifications = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      })) as NotificationType[]
+      
+      setNotifications(newNotifications)
+      setUnreadCount(newNotifications.length)
+
       snapshot.docChanges().forEach((change) => {
         if (change.type === 'added' && !getShownNotifications().has(change.doc.id)) {
-          const data = change.doc.data()
-          console.log('useNotifications received new notification:', {
-            id: change.doc.id,
-            data,
-            timestamp: Date.now()
-          })
           addToShownNotifications(change.doc.id)
         }
       })
@@ -79,5 +84,5 @@ export function useNotifications(currentUser: User | null) {
     return () => unsubscribe()
   }, [currentUser])
 
-  return {}
+  return { notifications, unreadCount }
 } 

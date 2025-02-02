@@ -1,5 +1,5 @@
-import { useState } from 'react'
-import ReactCrop, { Crop } from 'react-image-crop'
+import { useState, useRef } from 'react'
+import ReactCrop, { Crop, PixelCrop, centerCrop, makeAspectCrop } from 'react-image-crop'
 import 'react-image-crop/dist/ReactCrop.css'
 
 type Props = {
@@ -8,10 +8,19 @@ type Props = {
   onSave: (croppedImage: Blob) => Promise<void>
 }
 
+const defaultCrop: Crop = {
+  unit: 'px',
+  x: 0,
+  y: 0,
+  width: 100,
+  height: 100,
+  aspect: 1
+}
+
 export default function ImageCropModal({ imageUrl, onClose, onSave }: Props) {
-  const [crop, setCrop] = useState<Crop>()
-  const [imageRef, setImageRef] = useState<HTMLImageElement | null>(null)
+  const [crop, setCrop] = useState<Crop>(defaultCrop)
   const [loading, setLoading] = useState(false)
+  const imageRef = useRef<HTMLImageElement | null>(null)
 
   const getCroppedImg = async (image: HTMLImageElement, crop: Crop): Promise<Blob> => {
     const canvas = document.createElement('canvas')
@@ -58,11 +67,11 @@ export default function ImageCropModal({ imageUrl, onClose, onSave }: Props) {
   }
 
   const handleSave = async () => {
-    if (!imageRef || !crop.width || !crop.height) return
+    if (!imageRef.current || !crop.width || !crop.height) return
     
     try {
       setLoading(true)
-      const croppedImage = await getCroppedImg(imageRef, crop)
+      const croppedImage = await getCroppedImg(imageRef.current, crop)
       await onSave(croppedImage)
       onClose()
     } catch (error) {
@@ -88,7 +97,7 @@ export default function ImageCropModal({ imageUrl, onClose, onSave }: Props) {
       aspect: 1
     })
 
-    setImageRef(e.currentTarget)
+    imageRef.current = e.currentTarget
   }
 
   return (

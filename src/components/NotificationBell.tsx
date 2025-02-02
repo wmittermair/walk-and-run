@@ -1,6 +1,11 @@
+import { User, NotificationType } from '../types'
 import { useNotifications } from '../hooks/useNotifications'
 
-export default function NotificationBell({ user }: { user: User }) {
+type Props = {
+  user: User
+}
+
+export default function NotificationBell({ user }: Props) {
   const { notifications, unreadCount } = useNotifications(user)
 
   return (
@@ -17,7 +22,7 @@ export default function NotificationBell({ user }: { user: User }) {
       {/* Notification Dropdown */}
       {notifications.length > 0 && (
         <div className="absolute right-0 mt-2 w-80 bg-white rounded-lg shadow-xl">
-          {notifications.map((notification) => (
+          {notifications.map((notification: NotificationType) => (
             <div key={notification.id} className="p-4 border-b hover:bg-gray-50">
               <div className="font-medium">{notification.userName}</div>
               <div className="text-sm text-gray-600">

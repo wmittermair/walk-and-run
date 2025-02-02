@@ -8,7 +8,7 @@ import Auth from './components/Auth'
 import ProfileMenu from './components/ProfileMenu'
 import ManageActivityTypesModal from './components/ManageActivityTypesModal'
 import FilterModal from './components/FilterModal'
-import { UserFilter } from './types'
+import { UserFilter, UserData } from './types'
 import { useNotifications } from './hooks/useNotifications'
 import NotificationPrompt from './components/NotificationPrompt'
 
@@ -23,10 +23,7 @@ function App() {
   const [activities, setActivities] = useState<Activity[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [editActivity, setEditActivity] = useState<Activity | null>(null)
-  const [userData, setUserData] = useState<{
-    displayName: string | null;
-    photoURL: string | null;
-  } | null>(null)
+  const [userData, setUserData] = useState<UserData | null>(null)
   const [showActivityTypesModal, setShowActivityTypesModal] = useState(false)
   const [showFilterModal, setShowFilterModal] = useState(false)
   const [selectedUserId, setSelectedUserId] = useState('all')
@@ -272,6 +269,16 @@ function App() {
     }
   }
 
+  const handleProfileUpdate = (updates: Partial<UserData>) => {
+    if (userData) {
+      setUserData({
+        ...userData,
+        displayName: updates.displayName ?? userData.displayName,
+        photoURL: updates.photoURL ?? userData.photoURL
+      })
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -294,12 +301,7 @@ function App() {
               {user && (
                 <ProfileMenu 
                   user={user}
-                  onProfileUpdate={(newData) => {
-                    setUserData({
-                      ...userData,
-                      ...newData
-                    })
-                  }}
+                  onProfileUpdate={handleProfileUpdate}
                 />
               )}
             </div>

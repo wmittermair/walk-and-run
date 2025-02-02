@@ -1,12 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
-import { Activity, ActivityType } from '../App'
+import { Activity, ActivityType } from '../types'
 import AddActivityTypeModal from './AddActivityTypeModal'
 import { playCelebrationAnimation } from './CelebrationAnimation'
 
 type Props = {
   onClose: () => void
-  onAdd: (activity: Omit<Activity, 'id' | 'userId'>) => void
-  onUpdate?: (activity: Omit<Activity, 'id' | 'userId'>) => void
+  onAdd: (activity: Omit<Activity, 'id' | 'userId'>) => Promise<void>
+  onUpdate?: (activity: Omit<Activity, 'id' | 'userId'>) => Promise<void>
   activityTypes: ActivityType[]
   onAddActivityType: (type: Omit<ActivityType, 'id'>) => Promise<string>
   editActivity?: Activity | null

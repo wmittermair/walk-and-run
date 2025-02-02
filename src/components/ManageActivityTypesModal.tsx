@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { ActivityType } from '../App'
+import { ActivityType } from '../types'
 import AddActivityTypeModal from './AddActivityTypeModal'
 
 type Props = {
@@ -7,7 +7,7 @@ type Props = {
   onClose: () => void
   onDelete: (id: string) => Promise<void>
   onAdd: (type: Omit<ActivityType, 'id'>) => Promise<string>
-  onUpdate: (id: string, type: Partial<ActivityType>) => Promise<void>
+  onUpdate: (id: string, updates: Partial<ActivityType>) => Promise<void>
   onRestore: (id: string) => Promise<void>
   onRemove: (id: string) => Promise<void>
 }

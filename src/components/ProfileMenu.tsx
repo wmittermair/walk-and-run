@@ -1,14 +1,15 @@
 import { useState, useRef } from 'react'
-import { User } from 'firebase/auth'
+import { User, UserData } from '../types'
 import { auth, storage, db } from '../lib/firebase'
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 import { updateProfile } from 'firebase/auth'
 import { doc, updateDoc, setDoc } from 'firebase/firestore'
 import ImageCropModal from './ImageCropModal'
+import { FirebaseError } from 'firebase/app'
 
 type Props = {
   user: User
-  onProfileUpdate: (data: { displayName?: string | null; photoURL?: string | null }) => void
+  onProfileUpdate: (updates: Partial<UserData>) => void
 }
 
 export default function ProfileMenu({ user, onProfileUpdate }: Props) {
@@ -42,14 +43,14 @@ export default function ProfileMenu({ user, onProfileUpdate }: Props) {
       
       onProfileUpdate({ displayName: displayName.trim() })
       setIsEditing(false)
-    } catch (error: any) {  // Explizite Fehlertypisierung
-      console.error('Error updating name:', error)
+    } catch (error) {
+      const firebaseError = error as FirebaseError
+      console.error('Error updating name:', firebaseError)
       
-      // Detailliertere Fehlermeldung
       let errorMessage = 'Fehler beim Aktualisieren des Namens. '
-      if (error.code === 'permission-denied') {
+      if (firebaseError.code === 'permission-denied') {
         errorMessage += 'Keine Berechtigung.'
-      } else if (error.code === 'not-found') {
+      } else if (firebaseError.code === 'not-found') {
         errorMessage += 'Benutzer nicht gefunden.'
       } else {
         errorMessage += 'Bitte versuche es erneut.'
