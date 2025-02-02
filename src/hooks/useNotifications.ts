@@ -29,8 +29,8 @@ export function useNotifications(currentUser: User | null) {
 
         // FCM Token erhalten
         if ('serviceWorker' in navigator) {
-          const registration = await navigator.serviceWorker.register('/firebase-messaging-sw.js', {
-            scope: '/'
+          const registration = await navigator.serviceWorker.register('/walk-and-run/firebase-messaging-sw.js', {
+            scope: '/walk-and-run/'
           })
           
           await navigator.serviceWorker.ready

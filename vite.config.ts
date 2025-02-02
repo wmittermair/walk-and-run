@@ -6,7 +6,7 @@ export default defineConfig({
   css: {
     postcss: './postcss.config.js'
   },
-  base: '/walk-and-run/',  // Ihr Repository-Name
+  base: '/walk-and-run/',  // Dies ist wichtig für GitHub Pages
   server: {
     host: '0.0.0.0',  // Lauscht auf allen Netzwerk-Interfaces
     port: 5173,
@@ -16,5 +16,10 @@ export default defineConfig({
       '127.0.0.1',
       '.loca.lt'  // Erlaubt alle Subdomains von loca.lt
     ]
+  },
+  build: {
+    outDir: 'dist',
+    assetsDir: 'assets',
+    sourcemap: true
   }
 })
