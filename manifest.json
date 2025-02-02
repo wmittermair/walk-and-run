@@ -1,0 +1,10 @@
+{
+  "name": "Fitness Tracker",
+  "short_name": "Fitness",
+  "start_url": "/walk-and-run/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3b82f6",
+  "gcm_sender_id": "755134763313",
+  "icons": []
+} 
