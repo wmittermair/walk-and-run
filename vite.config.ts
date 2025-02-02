@@ -6,7 +6,7 @@ export default defineConfig({
   css: {
     postcss: './postcss.config.js'
   },
-  base: '/walk-and-run/',  // Dies ist wichtig für GitHub Pages
+  base: '/walk-and-run/',
   server: {
     host: '0.0.0.0',  // Lauscht auf allen Netzwerk-Interfaces
     port: 5173,
